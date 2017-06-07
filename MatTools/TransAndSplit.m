@@ -2,6 +2,8 @@ fileFolder=fullfile('.');
 suffix = '*.tiff'
 dirOutput=dir(fullfile(fileFolder, suffix));
 fileNames={dirOutput.name}';
+suffixlen = length(suffix);
+
 
 for i = 1:length(fileNames)
     name = fileNames(i);
