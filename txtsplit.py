@@ -2,6 +2,8 @@ import os
 import codecs
 import numpy as np
 import math
+import tensorflow as tf
+
 
 class object:
     bbox = np.zeros(8) - 1;
