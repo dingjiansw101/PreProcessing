@@ -33,11 +33,15 @@ def dotsToRec8(dots):
     return  rec8
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--labelTxt', default=r'E:\Data\dataset\trainval\labelTxt', type=str)
-    parser.add_argument('--outdir', default=r'E:\Data\dataset\trainval\8dotsRec', type=str)
-    parser.add_argument('--outdirRec', default=r'E:\Data\dataset\trainval\4dotsRec', type=str)
+    parser.add_argument('--labelTxt', default=r'E:\Data\dataset2\trainval\LABEL2\gf', type=str)
+    parser.add_argument('--outdir', default=r'E:\Data\dataset2\trainval\LABEL2\8dotsRec', type=str)
+    parser.add_argument('--outdirRec', default=r'E:\Data\dataset2\trainval\LABEL2\4dotsRec', type=str)
     args = parser.parse_args()
     list = GetFile.GetFileFromThisRootDir(args.labelTxt, 'txt');
+
+    gfclass = {'0A':'plane', '0B':'plane', '0C':'plane', '0':'plane', '2':'bridge', '5':'ship', '5A':'ship', '5B':'ship',
+           '8':'storage', '11':'harbor'}
+    jlclass = {'0':'plane', '2':'bridge', '9':'ship', '6':'harbor', '5':'storage'}
 
     for file in list:
         strlist = file.split('\\');
@@ -58,6 +62,12 @@ def main():
             if line:
                 line = line.strip()
                 linelist = line.split(' ')
+
+                ##change class name, drop blurr 2, reserve blurr 1
+                print(linelist[8])
+                linelist[8] = gfclass[linelist[8]]
+                #linelist[8] = jlclass[linelist[8]]
+
                 print('linelist', linelist)
                 dots.append([int(linelist[0]), int(linelist[1])])
                 dots.append([int(linelist[2]), int(linelist[3])])
@@ -68,16 +78,20 @@ def main():
                 outline4 = ''
                 for i in range(4):
                     outline4 = outline4 + str(rec4[i]) + ' '
-                for i in range(8, (len(linelist))):
-                    outline4 = outline4 + linelist[i]
+                outline4 = outline4 + linelist[8]
+                if (len(linelist) > 8):
+                    if (linelist[8] == '1'):
+                        outline4 = outline4 + ' ' + linelist[9]
                 print('out4', outline4)
                 out4.write(outline4 + '\n')
 
                 outline8 = ''
                 for i in range(8):
                     outline8 = outline8 + str(rec8[i]) + ' '
-                for i in range(8, len(linelist)):
-                    outline8 = outline8 + linelist[i]
+                outline8 = outline8 + linelist[8]
+                if (len(linelist) > 8):
+                    if (linelist[8] == '1'):
+                        outline8 = outline8 + ' ' + linelist[9]
                 print('out8', outline8)
                 #out8.write(line + '\n')
                 out8.write(outline8 + '\n')
