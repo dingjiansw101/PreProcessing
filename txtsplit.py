@@ -3,27 +3,53 @@ import codecs
 import numpy as np
 import math
 import tensorflow as tf
+from GetFileFromDir import GetFileFromThisRootDir
+import argparse
 
-wo shi txt-branch
 class object:
     bbox = np.zeros(8) - 1;
     label = -1;
     hardflag = -2;
-#for i in range(3):
- #   print(i)
-#print('str',type(str(2)), 'num', type(2))
-testlist = [[]]
-testlist[0].append(1)
-testlist.append([])
-print(testlist)
 
+def txtsplit(imagesize, gap, subsize):
+    pass
+def imagesplit(imagesize, gap, subsize):
+    pass
+def splitdata(filename, gap, subsize):
+    pass
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dir', default=r'G:\Data\91Google\summary\labelTxt', type=str)
+    parser.add_argument('--splitdir', default=r'G:\Data\91Google\summary\autocheck\\', type=str)
+    parser.add_argument('--gap', default=10, type=int)
+    parser.add_argument('--subsize')
+    args = parser.parse_args()
+    labeldir = os.path.join(args.dir, 'labelTxt')
+    imagedir = os.path.join(args.dir, 'images')
+    splitlabeldir = os.path.join(args.splitdir, 'labelTxt')
+    splitimagedir = os.path.join(args.splitdir, 'images')
+
+
+    list = GetFileFromThisRootDir('G:\oldtonew\oldtxt', 'txt');
+    for file in list:
+        print(file)
+        f = open(file, 'r', encoding='utf_16')
+        strlist = file.split('\\');
+        filename = strlist[len(strlist) - 1]
+        suffix = os.path.splitext(filename)[1]
+        filename = filename[0:(len(filename) - len(suffix))];
+        splitdata(file, )
+
+if __name__ == '__main__':
+    main()
 def txtsplit(txt, basedir):
     print('txt', txt)
     f = open(txt, 'r', encoding='utf_16')
-    strlist = txt.split('\\')
-    name = strlist[len(strlist) - 1];
-    name = name[0:(len(name) - 4)];
-    print('yes', name);
+    strlist = txt.split('\\');
+    filename = strlist[len(strlist) - 1]
+    suffix = os.path.splitext(filename)[1]
+    filename = filename[0:(len(filename) - len(suffix))];
     #dir = basedir + str + '.txt';
     #os.mkdir(basedir)
 
@@ -32,7 +58,7 @@ def txtsplit(txt, basedir):
     for y in range(4):
         filelist.append([])
         for x in range(4):
-            dir = basedir + name + '_' + str(y + 1) + '_' + str(x + 1) + '.txt'
+            dir = basedir + filename + '_' + str(y + 1) + '_' + str(x + 1) + '.txt'
             out = codecs.open(dir, 'w', 'utf_16');
             filelist[y].append(out)
     print('filelist', filelist)

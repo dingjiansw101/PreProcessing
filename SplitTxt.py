@@ -3,7 +3,7 @@ import os
 import numpy as np
 import codecs,sys
 import txtsplit
-
+from  GetFileFromDir import GetFileFromThisRootDir
 class object:
     bbox = np.zeros(8) - 1;
     label = -1;
@@ -16,19 +16,9 @@ test.append(ob1)
 test.append(ob2)
 print(test[0].bbox)
 print(test[1].bbox)
-def GetFileFromThisRootDir(dir,ext = None):
-  allfiles = []
-  needExtFilter = (ext != None)
-  for root,dirs,files in os.walk(dir):
-    for filespath in files:
-      filepath = os.path.join(root, filespath)
-      extension = os.path.splitext(filepath)[1][1:]
-      if needExtFilter and extension in ext:
-        allfiles.append(filepath)
-      elif not needExtFilter:
-        allfiles.append(filepath)
-  return allfiles
 
+while True:
+    pass
 list = GetFileFromThisRootDir('G:\oldtonew\oldtxt', 'txt');
 basedir = 'G:\oldtonew\\newtxt\\';
 print(basedir)
