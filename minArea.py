@@ -18,19 +18,26 @@ def GetFileFromThisRootDir(dir,ext = None):
         allfiles.append(filepath)
   return allfiles
 
-list = GetFileFromThisRootDir('G:\Data\GoogleMap\标注\dj\Tool\labelTxt', 'txt');
-basedir = 'G:\Data\GoogleMap\标注\dj\Tool\labelchange\\';
+list = GetFileFromThisRootDir(r'E:\Data\JINLIN\Txt\labelTxt', 'txt');
+basedir = r'E:\Data\JINLIN\Txt\reclabelTxt\\';
 print(basedir)
 print('2**2 = ', 2**2)
-
+gfclass = {'0A':'plane', '0B':'plane', '0C':'plane', '0':'plane', '2':'bridge', '5':'ship', '5A':'ship', '5B':'ship',
+           '8':'storage', '11':'harbor'}
+jlclass = {'0':'plane', '2':'bridge', '9':'ship', '6':'harbor', '5':'storage'}
 for txt in list:
     print('txt', txt)
     f = open(txt, 'r', encoding='utf_16')
     strlist = txt.split('\\');
     filename = strlist[len(strlist) - 1];
-    filename = filename[0:(len(filename) - 4)];
+    print('filename', filename)
+    suffix = os.path.splitext(filename)[1]
+    print('suffix', suffix)
+    print('lensuffix', len(suffix))
+    filename = filename[0:(len(filename) - len(suffix))];
     print('yes', filename);
     dir = basedir + filename + '.txt';
+    print('dir', dir)
     out = codecs.open(dir, 'w', 'utf_16');
 
     cnt = 0;
@@ -39,7 +46,6 @@ for txt in list:
     #str = '';
 
     while True:
-
         allcnt = allcnt + 1;
         print("allcnt", allcnt);
         cnt = cnt + 1;
@@ -53,9 +59,10 @@ for txt in list:
             for index, item in enumerate(bbox):
                 bbox[index] = float(item);
             print('bbox', bbox);
+            #linelist[8] = gfclass[linelist[8]]
+            linelist[8] = jlclass[linelist[8]]
             leftover = linelist[8:len(linelist)];
-            for index, item in enumerate(leftover):
-                leftover[index] = int(item);
+
             print('leftover', leftover);
 
             cnt = np.array([(bbox[0], bbox[1]), (bbox[2], bbox[3]), (bbox[4], bbox[5]), (bbox[6], bbox[7])], dtype = np.int32);

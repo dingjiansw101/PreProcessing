@@ -20,13 +20,13 @@ def GetFileFromThisRootDir(dir,ext = None):
       elif not needExtFilter:
         allfiles.append(filepath)
   return allfiles
-
+# basepath = 'E:\Data\GF2'
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--labelTxt', default=r'E:\Data\gaofen2\dingjian\Tool\labelTxt', type=str)
-    parser.add_argument('--autocheck', default=r'E:\Data\gaofen2\dingjian\Tool\autocheck\\', type=str)
-    parser.add_argument('--images', default=r'E:\Data\gaofen2\dingjian\Tool\images', type=str)
-    parser.add_argument('--smallcuts', default=r'E:\Data\gaofen2\dingjian\Tool\smallcuts', type=str)
+    parser.add_argument('--labelTxt', default=r'E:\Data\GF2\labelTxt', type=str)
+    parser.add_argument('--autocheck', default=r'E:\Data\GF2\autocheck\\', type=str)
+    parser.add_argument('--images', default=r'E:\Data\GF2\images', type=str)
+    parser.add_argument('--smallcuts', default=r'E:\Data\GF2\smallcuts', type=str)
     args = parser.parse_args()
 #    list = GetFileFromThisRootDir(r'G:\Data\91Google\zhouduoyou\5.9\5.9\labelTxt', 'txt');
     list = GetFileFromThisRootDir(args.labelTxt, 'txt');
@@ -37,10 +37,10 @@ def main():
     print(basedir)
     problem = basedir + 'problem.txt'
     pro_out = open(problem, 'w')
-    classname = ['0', '1', '2', '3', '4A', '4B', '5A', '5B', '6', '7', '8', '9', '10'
+    classname = ['0', '0A', '0B', '0C', '1', '2', '3', '4A', '4B', '4C', '5', '5A', '5B', '6', '7', '8', '9', '10'
                , '11', '12', '13', '14', '15', '16', '17', '18A', '18B', '18C', '18D', '18E'
                , '18F', '18G', '18H', '18I', '18J', '18K', '18L', '18M', '18N']
-    clsdict = {'0':0, '1':0, '2':0, '3':0, '4A':0, '4B':0, '5A':0, '5B':0, '6':0, '7':0, '8':0, '9':0, '10':0
+    clsdict = {'0':0, '0A':0, '0B':0, '0C':0, '1':0, '2':0, '3':0, '4A':0, '4B':0, '4C':0, '5':0, '5A':0, '5B':0, '6':0, '7':0, '8':0, '9':0, '10':0
                , '11':0, '12':0, '13':0, '14':0, '15':0, '16':0, '17':0, '18A':0, '18B':0, '18C':0, '18D':0, '18E':0
                , '18F':0, '18G':0, '18H':0, '18I':0, '18J':0, '18K':0, '18L':0, '18M':0, '18N':0}
     for txt in list:
