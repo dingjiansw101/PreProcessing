@@ -5,8 +5,8 @@ from GetFileFromDir import GetFileFromThisRootDir
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--imgdir', default=r'/home/ding/data/GFJL/splitdir/images', type=str)
-    parser.add_argument('--jpgimgdir', default=r'/home/ding/data/GFJL/splitdir/jpgimgs', type=str)
+    parser.add_argument('--imgdir', default=r'/home/ding/data/GFJL/testsplitdir/images', type=str)
+    parser.add_argument('--jpgimgdir', default=r'/home/ding/data/GFJL/testsplitdir/jpgimgs', type=str)
     args = parser.parse_args()
 
     imgnames = GetFileFromThisRootDir(args.imgdir)
