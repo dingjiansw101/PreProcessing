@@ -80,5 +80,33 @@ def reserRepImgTxt():
             dir = os.path.join(args.traindir, trainfile)
             print('dir:', dir)
             os.remove(dir)
+def rmemptyimg():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--imgdir', default=r'/home/ding/data/GFJL/trainsplitdir/jpgimgs', type=str)
+    parser.add_argument('--labeldir', default=r'/home/ding/data/GFJL/trainsplitdir/labelTxt', type=str)
+    args = parser.parse_args()
+    labels = GetFileFromThisRootDir(args.labeldir)
+    for label in labels:
+        f = open(label, 'r', encoding='utf_16')
+        print('label', label)
+        empty = True
+        while True:
+            line = f.readline()
+            if line:
+                print('line: ', line)
+                empty = False
+                break
+            else:
+                break
+        if (empty):
+            os.remove(label)
+            basename = os.path.basename(label)
+            suffix = os.path.splitext(basename)[1]
+            print('suffix', suffix)
+            name = basename[0: ( len(basename) - len(suffix))]
+            imgdir = os.path.join(args.imgdir, name + '.jpg')
+            print('imgdir', imgdir)
+            os.remove(imgdir)
+
 if __name__ == '__main__':
-    reserRepImgTxt()
+    rmemptyimg()
