@@ -82,8 +82,8 @@ def reserRepImgTxt():
             os.remove(dir)
 def rmemptyimg():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--imgdir', default=r'/home/ding/data/GFJL/trainsplitdir/jpgimgs', type=str)
-    parser.add_argument('--labeldir', default=r'/home/ding/data/GFJL/trainsplitdir/labelTxt', type=str)
+    parser.add_argument('--imgdir', default=r'/home/ding/data/GFJL/testsplitdir/jpgimgs', type=str)
+    parser.add_argument('--labeldir', default=r'/home/ding/data/GFJL/testsplitdir/labelTxt', type=str)
     args = parser.parse_args()
     labels = GetFileFromThisRootDir(args.labeldir)
     for label in labels:
