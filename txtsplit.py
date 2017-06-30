@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--dir', default=r'G:\Data\91Google\summary\labelTxt', type=str)
     parser.add_argument('--splitdir', default=r'G:\Data\91Google\summary\autocheck\\', type=str)
     parser.add_argument('--gap', default=10, type=int)
-    parser.add_argument('--subsize')
+    parser.add_argument('--subsize', default=608, type=int)
     args = parser.parse_args()
     labeldir = os.path.join(args.dir, 'labelTxt')
     imagedir = os.path.join(args.dir, 'images')
@@ -31,7 +31,7 @@ def main():
     splitimagedir = os.path.join(args.splitdir, 'images')
 
 
-    list = GetFileFromThisRootDir('G:\oldtonew\oldtxt', 'txt');
+    labellist = GetFileFromThisRootDir(labeldir, 'txt');
     for file in list:
         print(file)
         f = open(file, 'r', encoding='utf_16')
