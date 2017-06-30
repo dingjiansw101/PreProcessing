@@ -60,7 +60,7 @@ def reserRepImgTxt():
         if (flag == False):
             dir = os.path.join(args.testdir, testfile)
             print('dir:', dir)
-            #os.remove(dir)
+            os.remove(dir)
 
     for trainfile in trainlist:
         strlist = trainfile.split('\\');
@@ -79,6 +79,6 @@ def reserRepImgTxt():
         if (flag == False):
             dir = os.path.join(args.traindir, trainfile)
             print('dir:', dir)
-            #os.remove(dir)
+            os.remove(dir)
 if __name__ == '__main__':
     reserRepImgTxt()
