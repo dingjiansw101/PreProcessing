@@ -13,8 +13,8 @@ class object:
     hardflag = -2;
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dir', default=r'/home/ding/data/GFJL/test', type=str)
-parser.add_argument('--splitdir', default=r'/home/ding/data/GFJL/splitdir', type=str)
+parser.add_argument('--dir', default=r'/home/ding/data/GFJL/trainval', type=str)
+parser.add_argument('--splitdir', default=r'/home/ding/data/GFJL/trainsplitdir', type=str)
 parser.add_argument('--gap', default=10, type=int)
 parser.add_argument('--subsize', default=608, type=int)
 args = parser.parse_args()
