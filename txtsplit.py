@@ -5,41 +5,55 @@ import math
 import tensorflow as tf
 from GetFileFromDir import GetFileFromThisRootDir
 import argparse
+import cv2
 
 class object:
     bbox = np.zeros(8) - 1;
     label = -1;
     hardflag = -2;
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--dir', default=r'G:\Data\91Google\summary\labelTxt', type=str)
+parser.add_argument('--splitdir', default=r'G:\Data\91Google\summary\autocheck\\', type=str)
+parser.add_argument('--gap', default=10, type=int)
+parser.add_argument('--subsize', default=608, type=int)
+args = parser.parse_args()
+labeldir = os.path.join(args.dir, 'labelTxt')
+imagedir = os.path.join(args.dir, 'images')
+splitlabeldir = os.path.join(args.splitdir, 'labelTxt')
+splitimagedir = os.path.join(args.splitdir, 'images')
+
 def txtsplit(imagesize, gap, subsize):
-    pass
-def imagesplit(imagesize, gap, subsize):
-    pass
+    outfilelist = []
+    grid_m = (imagesize[0] - gap)/(subsize - gap)
+    grid_n = (imagesize[1] - gap)(subsize - gap)
+
+def imagesplit(img, imagesize, gap, subsize):
+    grid_m = (imagesize[0] - gap)/(subsize)
+    grid_n = (imagesize[1] - gap)/(subsize)
+    for i in range(grid_n - 1):
+        for j in range(grid_m - 1):
+            subimg = img[]
+
+
+
 def splitdata(filename, gap, subsize):
-    pass
+    img = cv2.imread(filename)
+    imagesize = img.shape
+    txtsplit(imagesize, gap, subsize)
+    imagesplit(imagesize, gap, subsize)
+
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dir', default=r'G:\Data\91Google\summary\labelTxt', type=str)
-    parser.add_argument('--splitdir', default=r'G:\Data\91Google\summary\autocheck\\', type=str)
-    parser.add_argument('--gap', default=10, type=int)
-    parser.add_argument('--subsize', default=608, type=int)
-    args = parser.parse_args()
-    labeldir = os.path.join(args.dir, 'labelTxt')
-    imagedir = os.path.join(args.dir, 'images')
-    splitlabeldir = os.path.join(args.splitdir, 'labelTxt')
-    splitimagedir = os.path.join(args.splitdir, 'images')
 
-
-    labellist = GetFileFromThisRootDir(labeldir, 'txt');
-    for file in list:
-        print(file)
-        f = open(file, 'r', encoding='utf_16')
-        strlist = file.split('\\');
-        filename = strlist[len(strlist) - 1]
-        suffix = os.path.splitext(filename)[1]
-        filename = filename[0:(len(filename) - len(suffix))];
-        splitdata(file, )
+    imagelist = GetFileFromThisRootDir(imagedir, 'txt');
+    for imgname in imagelist:
+        print(imgname)
+        strlist = imgname.split('\\');
+        imgname = strlist[len(strlist) - 1]
+        suffix = os.path.splitext(imgname)[1]
+        name = imgname[0:(len(imgname) - len(suffix))];
+        splitdata(imgname, args.gap, args.subsize)
 
 if __name__ == '__main__':
     main()
@@ -53,7 +67,7 @@ def txtsplit(txt, basedir):
     #dir = basedir + str + '.txt';
     #os.mkdir(basedir)
 
-
+    ##open all the split txt, assume it is divided into 4*4
     filelist = []
     for y in range(4):
         filelist.append([])
