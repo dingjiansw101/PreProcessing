@@ -33,9 +33,9 @@ def dotsToRec8(dots):
     return  rec8
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--labelTxt', default=r'E:\Data\dataset2\trainval\LABEL2\gf', type=str)
-    parser.add_argument('--outdir', default=r'E:\Data\dataset2\trainval\LABEL2\8dotsRec', type=str)
-    parser.add_argument('--outdirRec', default=r'E:\Data\dataset2\trainval\LABEL2\4dotsRec', type=str)
+    parser.add_argument('--labelTxt', default=r'E:\Data\GF2\txt\originlabelTxt2', type=str)
+    parser.add_argument('--outdir', default=r'E:\Data\GF2\txt\8dotsRec', type=str)
+    parser.add_argument('--outdirRec', default=r'E:\Data\GF2\txt\4dotsRec', type=str)
     args = parser.parse_args()
     list = GetFile.GetFileFromThisRootDir(args.labelTxt, 'txt');
 

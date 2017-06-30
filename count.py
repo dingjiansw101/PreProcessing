@@ -7,24 +7,12 @@ import re
 import math
 import numpy as np
 import argparse
-
-def GetFileFromThisRootDir(dir,ext = None):
-  allfiles = []
-  needExtFilter = (ext != None)
-  for root,dirs,files in os.walk(dir):
-    for filespath in files:
-      filepath = os.path.join(root, filespath)
-      extension = os.path.splitext(filepath)[1][1:]
-      if needExtFilter and extension in ext:
-        allfiles.append(filepath)
-      elif not needExtFilter:
-        allfiles.append(filepath)
-  return allfiles
+from  GetFileFromDir import GetFileFromThisRootDir
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--labelTxt', default=r'E:\Data\dataset2\trainval\labelTxt', type=str)
-    parser.add_argument('--autocheck', default=r'E:\Data\dataset2\trainval\autocheck\\', type=str)
+    parser.add_argument('--labelTxt', default=r'E:\Data\dataset2\test\labelTxt', type=str)
+    parser.add_argument('--autocheck', default=r'E:\Data\dataset2\test\autocheck\\', type=str)
     args = parser.parse_args()
 #    list = GetFileFromThisRootDir(r'G:\Data\91Google\zhouduoyou\5.9\5.9\labelTxt', 'txt');
     list = GetFileFromThisRootDir(args.labelTxt, 'txt');
