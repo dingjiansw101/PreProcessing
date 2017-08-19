@@ -1,7 +1,6 @@
 #coding:utf-8
 import os
 import codecs,sys
-import cv2
 import string
 import re
 import math
