@@ -69,10 +69,15 @@ def main():
                 #linelist[8] = jlclass[linelist[8]]
 
                 print('linelist', linelist)
-                dots.append([int(linelist[0]), int(linelist[1])])
-                dots.append([int(linelist[2]), int(linelist[3])])
-                dots.append([int(linelist[4]), int(linelist[5])])
-                dots.append([int(linelist[6]), int(linelist[7])])
+
+                ### not pythonic
+                # dots.append([int(linelist[0]), int(linelist[1])])
+                # dots.append([int(linelist[2]), int(linelist[3])])
+                # dots.append([int(linelist[4]), int(linelist[5])])
+                # dots.append([int(linelist[6]), int(linelist[7])])
+
+                ## pythonic way
+                dots = [ [int(linelist[2*x]), int(linelist[2*x+1])] for x in range(4)]
                 rec4 = dotsToRec4(dots)
                 rec8 = dotsToRec8(dots)
                 outline4 = ''
@@ -86,9 +91,15 @@ def main():
                 out4.write(outline4 + '\n')
 
                 outline8 = ''
-                for i in range(8):
-                    outline8 = outline8 + str(rec8[i]) + ' '
-                outline8 = outline8 + linelist[8]
+                ## not pythonic
+                # for i in range(8):
+                #     outline8 = outline8 + str(rec8[i]) + ' '
+                # outline8 = outline8 + linelist[8]
+
+                ## pythonic way
+                outline8 = ' '.join(rec8[0:8])
+                outline8 = outline8 + ' ' + linelist[8]
+
                 if (len(linelist) > 8):
                     if (linelist[8] == '1'):
                         outline8 = outline8 + ' ' + linelist[9]

@@ -13,12 +13,11 @@ import matplotlib.pyplot as plt
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--labelTxt', default=r'E:\GoogleEarth\杜阳\杜阳8.5\杜阳8.5\labelTxt', type=str)
-    parser.add_argument('--autocheck', default=r'E:\GoogleEarth\杜阳\杜阳8.5\杜阳8.5\autocheck\\', type=str)
+    basepath  = r'E:\GoogleEarth\up-9-25-data\3级质量\船或车存在未标注\李雄'
+    parser.add_argument('--labelTxt', default=os.path.join(basepath, 'labelTxt'), type=str)
+    parser.add_argument('--autocheck', default=os.path.join(basepath, 'autocheck'), type=str)
     args = parser.parse_args()
-#    list = GetFileFromThisRootDir(r'G:\Data\91Google\zhouduoyou\5.9\5.9\labelTxt', 'txt');
     list = GetFileFromThisRootDir(args.labelTxt, 'txt');
-    #basedir = r'G:\Data\91Google\zhouduoyou\5.9\5.9\autocheck\\'
     basedir = args.autocheck
     print(basedir)
     problem = os.path.join(basedir, 'problem.txt')
@@ -46,7 +45,7 @@ def main():
         print('txt', txt)
         f = open(txt, 'r', encoding='utf_16')
         #f = open(txt, 'r')
-        #dir = basedir + 'count.txt'
+        #dir = basedir + 'count.txt'；
         strlist = txt.split('\\');
         filename = strlist[len(strlist) - 1];
         filename = filename[0:(len(filename) - 4)];
@@ -72,16 +71,18 @@ def main():
         f.close()
     pro_out.close()
     print('class', clsdict)
-    dir = basedir + 'count.txt'
-    count_out = open(dir, 'w')
+    count_dir = os.path.join(basedir, 'count.txt')
+    count_out = open(count_dir, 'w')
     sum = 0
+    ## not pythonic
     for item in classname:
-        outline = ''
-        wordname = dataDic[item]
-        #outline = str(item) + ': ' + str(clsdict[item])
-        outline = str(wordname) + ': ' + str(clsdict[item])
-        count_out.write(outline + '\n')
-        sum = sum + clsdict[item]
+         outline = ''
+         wordname = dataDic[item]
+         #outline = str(item) + ': ' + str(clsdict[item])
+         outline = str(wordname) + ': ' + str(clsdict[item])
+         count_out.write(outline + '\n')
+         sum = sum + clsdict[item]
+
     count_out.write('sum: ' + str(sum))
     count_out.close()
 

@@ -19,3 +19,15 @@ def GetFileFromThisRootDir(dir,ext = None):
       elif not needExtFilter:
         allfiles.append(filepath)
   return allfiles
+if __name__ == '__main__':
+    filelist = GetFileFromThisRootDir(r'E:\20170719', '.tar.gz')
+    outpath = r'E:\code\enviscript\names.txt'
+    out = open(outpath, 'w')
+    print(len(filelist))
+    for name in filelist:
+        basename = os.path.basename(name)
+        print('basename: ', basename)
+        id = os.path.splitext(basename)[0]
+        id2 = os.path.splitext(id)[0]
+        print('id: ', id2)
+        out.write(id2 + '\n')
