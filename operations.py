@@ -6,20 +6,17 @@ import shutil
 import cv2
 import numpy as np
 import codecs
+import
 
-basepath = r'E:\GoogleEarth\up-9-25-data\3级质量\船或车存在未标注\李雄'
+basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg'
 paths = []
 paths.append(os.path.join(basepath, 'information'))
 paths.append(os.path.join(basepath, 'images'))
 paths.append(os.path.join(basepath, 'labelTxt'))
 def filerm():
-    #path1 = r'E:\GoogleEarth\A8_data\秦绍杰\labelTxt'
-    #path2 = r'E:\GoogleEarth\A8_data\秦绍杰\images'
-    rmfiles = util.filesetcalc(paths[2], paths[1], 'd')
-    #print('rmfiles:', rmfiles)
-
+    rmfiles = util.filesetcalc(paths[1], paths[2], 'd')
     for rmname in rmfiles:
-        rmdir = os.path.join(paths[2], rmname + '.txt')
+        rmdir = os.path.join(paths[1], rmname + '.tif')
         print('rmdir:', rmdir)
         os.remove(rmdir)
 def filemove():
@@ -147,9 +144,22 @@ def parseDarknetOut():
             if (name == 'GF2_PMS1_E114.0_N22.3_20161010_L1A0001879601-PAN1_2_3'):
                 count = count + 1
             print('count:', count)
+def findDiff():
+    path = r'E:\GoogleEarth\up-9-25-data\secondjpg\train\images'
+    splitpath = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit\images'
+    imglist = util.GetFileFromThisRootDir(path)
+    splitimglist = util.GetFileFromThisRootDir(splitpath)
+    imgnames = {os.path.basename(os.path.splitext(x)[0]) for x in imglist}
+    splitnames = {os.path.basename(os.path.splitext(x)[0])[0: -4] for x in splitimglist}
+    print('imgnames;', imgnames)
+    print('splitnames:', splitnames)
+    diff1 = imgnames.difference(splitnames)
+    print('diff:', diff1)
+
 if __name__ == '__main__':
     #checkB()
+    pass
     #parseDarknetOut()
-    filerm()
+    #filerm()
     #rmDate()
     #addDate('_8-9')
