@@ -15,7 +15,7 @@ from utils import classname
 from utils import clsdict
 def main():
     parser = argparse.ArgumentParser()
-    basepath  = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit'
+    basepath  = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2'
     clearlabelpath = os.path.join(basepath, 'clearlabelTxt')
     parser.add_argument('--labelTxt', default=os.path.join(basepath, 'labelTxt'), type=str)
     parser.add_argument('--autocheck', default=os.path.join(basepath, 'autocheck'), type=str)
@@ -24,14 +24,14 @@ def main():
     basedir = args.autocheck
     print(basedir)
     problem = os.path.join(basedir, 'problem.txt')
-    print('problem', problem)
+    #print('problem', problem)
     pro_out = open(problem, 'w')
     for txt in list:
-        print('txt', txt)
+        #print('txt', txt)
         f = open(txt, 'r', encoding='utf_16')
         filename = os.path.basename(os.path.splitext(txt)[0])
         count = 0;
-        print(txt)
+        #print(txt)
         ## optional out
         #outname = os.path.join(clearlabelpath, filename + '.txt')
         #f_out = codecs.open(outname, 'w', 'utf_16')
@@ -41,7 +41,7 @@ def main():
             if line:
                 line = line.strip()
                 linelist = line.split(' ')
-                print('linelist', linelist)
+                #print('linelist', linelist)
                 if (len(linelist) <= 8):
                     pro_out.write(filename + ' line: ' + str(count) + ' missing label' + '\n')
                 else:
@@ -54,7 +54,7 @@ def main():
                 break
         f.close()
     pro_out.close()
-    print('class', clsdict)
+    #print('class', clsdict)
     count_dir = os.path.join(basedir, 'count.txt')
     count_out = open(count_dir, 'w')
     sum = 0
@@ -71,7 +71,7 @@ def main():
     names = []
     y = []
     for id in clsdict:
-        print('id: ', id)
+        #print('id: ', id)
         name = dataDic[id]
         names.append(name)
         number = clsdict[id]

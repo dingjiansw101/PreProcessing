@@ -6,7 +6,6 @@ import shutil
 import cv2
 import numpy as np
 import codecs
-import
 
 basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg'
 paths = []

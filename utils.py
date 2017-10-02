@@ -14,6 +14,7 @@ import sys
 import numpy as np
 import random
 import shutil
+import shapely.geometry as shgeo
 datamap = {'0A': 'passenger plane', '0B': 'fighter aeroplane', '0C': 'radar warning aircraft',
            '1': 'baseball diamond', '2': 'bridge', '3': 'ground track', '4A': 'car', '4B': 'truck',
            '4C': 'bus', '5A': 'ship', '5': 'ship', '5B': 'warship', '6': 'tennis court', '7': 'Basketball court',
@@ -69,23 +70,32 @@ def filesetcalc(path1, path2, calc = ''):
         print('inter_dict:', inter_set)
         return inter_set
 
-def dotsToRecC(dots):
-    xmin, xmax, ymin, ymax = dotsToRec4(dots)
+def dots2ToRecC(rec):
+    xmin, xmax, ymin, ymax = dots2ToRec4(rec)
     x = (xmin + xmax)/2
     y = (ymin + ymax)/2
     w = xmax - xmin
     h = ymax - ymin
     return x, y, w, h
 
-def dotsToRec4(dots):
-    xmin, xmax, ymin, ymax = dots[0], dots[0], dots[1], dots[1]
+def dots2ToRec4(rec):
+    xmin, xmax, ymin, ymax = rec[0], rec[0], rec[1], rec[1]
     for i in range(3):
-        xmin = min(xmin, dots[i * 2 + 1])
-        xmax = max(xmax, dots[i * 2 + 1])
-        ymin = min(ymin, dots[i * 2 + 2])
-        ymax = max(ymax, dots[i * 2 + 2])
+        xmin = min(xmin, rec[i * 2 + 1])
+        xmax = max(xmax, rec[i * 2 + 1])
+        ymin = min(ymin, rec[i * 2 + 2])
+        ymax = max(ymax, rec[i * 2 + 2])
     return xmin, ymin, xmax, ymax
 
+def dots4ToRec4(poly):
+    xmin, xmax, ymin, ymax = min(poly[0][0], min(poly[1][0], min(poly[2][0], poly[3][0]))), \
+                            max(poly[0][0], max(poly[1][0], max(poly[2][0], poly[3][0]))), \
+                             min(poly[0][1], min(poly[1][1], min(poly[2][1], poly[3][1]))), \
+                             max(poly[0][1], max(poly[1][1], max(poly[2][1], poly[3][1])))
+    return xmin, ymin, xmax, ymax
+def dots4ToRec8(poly):
+    xmin, ymin, xmax, ymax = dots4ToRec4(poly)
+    return xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax
 def parse_rec(filename):
     """ Parse a PASCAL VOC xml file """
     tree = ET.parse(filename)
@@ -104,13 +114,33 @@ def parse_rec(filename):
         objects.append(obj_struct)
     return objects
 
-def txt2pascal(basepath):
+def bod4dotsTo2dots(basepath):
+    dots2path = os.path.join(basepath, r'2dotslabelTxt')
+    dots4path = os.path.join(basepath, r'labelTxt')
+    txtlist = GetFileFromThisRootDir(dots4path, '.txt')
+    for txtfile in txtlist:
+        objects = parse_bod_poly(txtfile)
+        basename = os.path.splitext(os.path.basename(txtfile))[0]
+        f_out = codecs.open(os.path.join(dots2path, basename + '.txt'), 'w', 'utf_16')
+        for obj in objects:
+            bbox = dots4ToRec8(obj['poly'])
+            name = obj['name']
+            difficult = obj['difficult']
+            bbox = list(map(str, bbox))
+            outline = ' '.join(bbox)
+            outline = outline + ' ' + name
+            if difficult:
+                outline = outline + ' ' + str(difficult)
+            f_out.write(outline + '\n')
+def test_bod4dotsTo2dots():
+    bod4dotsTo2dots(r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2')
+
+def bod2pascal(basepath):
     pascalLabel_path = os.path.join(basepath, r'pascalLabel')
-    info_path = os.path.join(basepath, r'information')
     txt_path = os.path.join(basepath, r'labelTxt')
     txtlist = GetFileFromThisRootDir(txt_path, '.txt')
     for txtfile in txtlist:
-        objects = parse_gt(txtfile)
+        objects = parse_bod_poly(txtfile)
         basename = os.path.splitext(os.path.basename(txtfile))[0]
         tree_root = ET.Element('annotation')
         folder = ET.SubElement(tree_root, 'secondjpg')
@@ -119,10 +149,10 @@ def txt2pascal(basepath):
         width = ET.SubElement(size, 'width')
         height = ET.SubElement(size, 'height')
         ## TODO: read imagesize from img or info
-        imgname = os.path.join(basepath, 'images', basename + '.tif')
-        img = cv2.imread(imgname)
-        width.text = str(np.shape(img)[1])
-        height.text = str(np.shape(img)[0])
+        imgname = os.path.join(basepath, 'images', basename + '.jpg')
+        #img = cv2.imread(imgname)
+        width.text = str(1024)
+        height.text = str(1024)
         for obj in objects:
             object = ET.SubElement(tree_root, 'object')
             ET.dump(tree_root)
@@ -137,21 +167,19 @@ def txt2pascal(basepath):
             xmax = ET.SubElement(bndbox, 'xmax')
             ymin = ET.SubElement(bndbox, 'ymin')
             ymax = ET.SubElement(bndbox, 'ymax')
-            xmin.text = str(obj['bbox'][0])
-            xmax.text = str(obj['bbox'][1])
-            ymin.text = str(obj['bbox'][2])
-            ymax.text = str(obj['bbox'][3])
+            poly = obj['poly']
+            bbox = dots4ToRec4(poly)
+            xmin.text = str(bbox[0])
+            ymin.text = str(bbox[1])
+            xmax.text = str(bbox[2])
+            ymax.text = str(bbox[3])
         #tree_debug = ET.dump(tree_root)
         tree = ET.ElementTree(tree_root)
-        #print(ET.tostring(tree_root))
-        #outfile = os.path.join(pascalLabel_path, basename + '.xml')
-        #print('outfile:', outfile)
-        #print('type outfile:', type(outfile))
         tree.write(os.path.join(pascalLabel_path, basename + '.xml'))
 def testtxt2pascal():
-    basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg\train'
-    txt2pascal(basepath)
-def parse_poly(filename):
+    basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2'
+    bod2pascal(basepath)
+def parse_labelme_poly(filename):
     """ Parse a labelme xml file """
     tree = ET.parse(filename)
     objects = []
@@ -169,30 +197,39 @@ def parse_poly(filename):
             obj_struct['polygon'] = obj_struct['polygon'] + pt
         objects.append(obj_struct)
     return objects
-def parse_gt(filename):
+def parse_bod_poly(filename):
     objects = []
     print('filename:', filename)
-    with  open(filename, 'r', encoding='utf_16') as f:
-        while True:
-            line = f.readline()
-            if line:
-                splitlines = line.strip().split(' ')
-                object_struct = {}
-                if (len(splitlines) >= 9) and (splitlines[8] in classname):
-                    object_struct['name'] = splitlines[8]
-                else:
-                    continue
-                if (len(splitlines) == 9):
-                    object_struct['difficult'] = 0
-                elif (len(splitlines) >= 10):
-                    object_struct['difficult'] = 1
-                object_struct['bbox'] = [int(splitlines[0]),
-                                         int(splitlines[1]),
-                                         int(splitlines[4]),
-                                         int(splitlines[5])]
-                objects.append(object_struct)
+    f = []
+    if (sys.version_info >= (3, 5)):
+        fd = open(filename, 'r', encoding = 'utf_16')
+        f = fd
+    elif (sys.version_info >= 2.7):
+        fd = codecs.open(filename,'r', 'utf-16')
+        f = fd
+    while True:
+        line = f.readline()
+        if line:
+            splitlines = line.strip().split(' ')
+            object_struct = {}
+            if (len(splitlines) >= 9) and (splitlines[8] in classname):
+                object_struct['name'] = splitlines[8]
             else:
-                break
+                continue
+            if (len(splitlines) == 9):
+                object_struct['difficult'] = 0
+            elif (len(splitlines) >= 10):
+                object_struct['difficult'] = 1
+            object_struct['poly'] = [(int(float(splitlines[0])), int(float(splitlines[1]))),
+                                      (int(float(splitlines[2])), int(float(splitlines[3]))),
+                                      (int(float(splitlines[4])), int(float(splitlines[5]))),
+                                      (int(float(splitlines[6])), int(float(splitlines[7])))
+                                     ]
+            gtpoly = shgeo.Polygon(object_struct['poly'])
+            object_struct['area'] = gtpoly.area
+            objects.append(object_struct)
+        else:
+            break
     return objects
 def getorderLabel(filename):
     f = open(filename, 'r', encoding='utf_16')
@@ -247,7 +284,7 @@ def labelme2txt(basepath):
                     outline = ' '.join(obj['polygon']) + ' ' + obj['name']
                     f_out.write(outline + '\n')
 def testparse():
-    objects = parse_poly(r'E:\GAOFEN2\gaofen2Labelme\annotations\singapore-2016-4-27-1.xml')
+    objects = parse_labelme_poly(r'E:\GAOFEN2\gaofen2Labelme\annotations\singapore-2016-4-27-1.xml')
     print(objects)
 def TrainTestSplit():
     basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg'
@@ -282,5 +319,71 @@ def TrainTestSplit():
         srctxt = os.path.join(basepath, 'labelTxt', imgname + '.txt')
         dsttxt = os.path.join(basepath, 'test', 'labelTxt', imgname + '.txt')
         shutil.move(srctxt, dsttxt)
+def py_cpu_nms_poly(dets, thresh):
+    scores = dets[:, 8]
+    polys = []
+    areas = []
+    for i in len(dets):
+        tm_polygon = shgeo.Polygon([(dets[i][0], dets[i][1]),
+                                    (dets[i][2], dets[i][3]),
+                                    (dets[i][4], dets[i][5]),
+                                    (dets[i][6], dets[i][7])
+                                    ])
+        polys.append(tm_polygon)
+        areas.append(tm_polygon.area)
+    order = scores.argsort()[::-1]
+
+    keep = []
+    while order.size > 0:
+        ovr = []
+        i = order[0]
+        keep.append(i)
+        for j in len(order.size - 1):
+            inter_poly = polys[order[0]].intersection(polys[order[order[j + 1]]])
+            inter_area = inter_poly.area
+            ovr.append(inter_area / (areas[i] + areas[order[j + 1]] - inter_area))
+        ovr = np.array(ovr)
+        inds = np.where(ovr <= thresh)[0]
+        order = order([inds + 1])
+    return keep
+def py_cpu_nms(dets, thresh):
+    """Pure Python NMS baseline."""
+    x1 = dets[:, 0]
+    y1 = dets[:, 1]
+    x2 = dets[:, 2]
+    y2 = dets[:, 3]
+    scores = dets[:, 4]
+
+    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
+    order = scores.argsort()[::-1]
+
+    keep = []
+    while order.size > 0:
+        i = order[0]
+        keep.append(i)
+        xx1 = np.maximum(x1[i], x1[order[1:]])
+        yy1 = np.maximum(y1[i], y1[order[1:]])
+        xx2 = np.minimum(x2[i], x2[order[1:]])
+        yy2 = np.minimum(y2[i], y2[order[1:]])
+
+        w = np.maximum(0.0, xx2 - xx1 + 1)
+        h = np.maximum(0.0, yy2 - yy1 + 1)
+        inter = w * h
+        ovr = inter / (areas[i] + areas[order[1:]] - inter)
+
+        inds = np.where(ovr <= thresh)[0]
+        order = order[inds + 1]
+
+    return keep
+def test_py_cpu_nms():
+    dets = np.array([ [0, 0, 4, 4, 0.7],
+                        [2, 2, 7, 6, 0.8],
+                        [3, 2, 8, 5, 0.6],
+                        [0, 0, 7, 7, 0.75]
+                    ])
+    keep = py_cpu_nms(dets, 0.5)
+    print(keep)
+def nms_poly(boxes, threshold, type):
+    pass
 if __name__ == '__main__':
     testtxt2pascal()

@@ -10,9 +10,9 @@ import shapely.geometry as shgeo
 
 parser = argparse.ArgumentParser()
 basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg'
-parser.add_argument('--dir', default=os.path.join(basepath, 'train'), type=str)
-parser.add_argument('--splitdir', default=os.path.join(basepath, 'trainsplit'), type=str)
-parser.add_argument('--gap', default=10, type=int)
+parser.add_argument('--dir', default=os.path.join(basepath, 'test'), type=str)
+parser.add_argument('--splitdir', default=os.path.join(basepath, 'testsplit'), type=str)
+parser.add_argument('--gap', default=80, type=int)
 parser.add_argument('--subsize', default=1024, type=int)
 parser.add_argument('--thresh', default=0.5, type=float)
 args = parser.parse_args()
@@ -21,6 +21,12 @@ imagedir = os.path.join(args.dir, 'images')
 
 splitlabeldir = os.path.join(args.splitdir, 'labelTxt')
 splitimagedir = os.path.join(args.splitdir, 'images')
+
+outlier1 = 0
+outlier2 = 0
+
+f_error_name = os.path.join(args.dir, 'autocheck', 'error.txt')
+f_error = open(f_error_name, 'w')
 
 with open(os.path.join(args.splitdir, 'cutcfg.txt'), 'w') as f_cfg:
     f_cfg.write('gap:' + str(args.gap) + '\n')
@@ -34,9 +40,8 @@ def PointInRec(point, rec):
     return (rec[0] <= point[0]) and (point[0] <= rec[2]) and (rec[1] <= point[1]) and (point[1] <= rec[3])
 
 def txtsplit(imagesize, name, gap, subsize):
-    print('imagesize', imagesize)
-    f_error_name = os.path.join(args.dir, 'autocheck', 'error.txt')
-    f_error = open(f_error_name, 'w')
+    #print('imagesize', imagesize)
+
     grid_m = int((imagesize[0] - gap)/(subsize - gap))
     grid_n = int((imagesize[1] - gap)/(subsize - gap))
     filelist = []
@@ -44,16 +49,16 @@ def txtsplit(imagesize, name, gap, subsize):
         filelist.append([])
         for x in range(grid_n + 1):
             subfilename = name + '-' + str(y) + '_' + str(x) + '.txt'
-            print('splitlabeldir', splitlabeldir)
-            print('subfilename', subfilename)
+    #        print('splitlabeldir', splitlabeldir)
+    #        print('subfilename', subfilename)
             subdir = os.path.join(splitlabeldir, subfilename)
-            print('txtsubdir', subdir)
+    #        print('txtsubdir', subdir)
             out = codecs.open(subdir, 'w', 'utf_16');
             filelist[y].append(out)
 
     gtdir = os.path.join(labeldir, name + '.txt')
     f = open(gtdir, 'r', encoding='utf_16')
-    print('imagesize: ', imagesize)
+    #print('imagesize: ', imagesize)
     lines = f.readlines()
     for line in lines:
             linelist = line.strip().split(' ')
@@ -75,10 +80,10 @@ def txtsplit(imagesize, name, gap, subsize):
                 if (ggrid_x, ggrid_y) not in grids:
                     grids.append((ggrid_x, ggrid_y))
                 grid_xp, grid_yp = ggrid_x, ggrid_y
-                if ((ggrid_x * (subsize - gap) + gap) > int(object_strct['bbox'][i * 2]  / (subsize - gap))):
-                    grid_xp = ggrid_x - 1
-                if ((ggrid_y * (subsize - gap) + gap) > int(object_strct['bbox'][i * 2 + 1] / (subsize - gap))):
-                    grid_yp = ggrid_y - 1
+                if ((ggrid_x * (subsize - gap) + gap) > object_strct['bbox'][i * 2]):
+                    grid_xp = max(ggrid_x - 1, 0)
+                if ((ggrid_y * (subsize - gap) + gap) > object_strct['bbox'][i * 2 + 1] ):
+                    grid_yp = max(ggrid_y - 1, 0)
                 if (grid_xp, grid_yp) not in grids:
                     grids.append((grid_xp, grid_yp))
             for grid in grids:
@@ -94,10 +99,10 @@ def txtsplit(imagesize, name, gap, subsize):
                         tmp_bbox[i * 2] = int(object_strct['bbox'][i * 2] - leftup_x)
                         tmp_bbox[i * 2 + 1] = int(object_strct['bbox'][i * 2 + 1] - leftup_y)
 
-                    print('writing...')
+                   # print('writing...')
                     outline = ' '.join(list(map(str, tmp_bbox)))
                     if 'name' in object_strct:
-                        print('name:', object_strct['name'])
+                        #print('name:', object_strct['name'])
                         outline = outline + ' ' + object_strct['name'] + ' '
                     if (object_strct['difficult']):
                         outline = outline + str(1)
@@ -113,11 +118,16 @@ def txtsplit(imagesize, name, gap, subsize):
                     half_iou = inter_area/gtpoly_area
                     ## TODO: find the bug, cause grid_x, grid_y out of index
                     if (half_iou >= args.thresh):
-                        if (grid_y >= grid_m) or (grid_x >= grid_n):
+                        if (grid_y > grid_m) or (grid_x > grid_n):
                             f_error.write(name + '\n')
+                            global outlier2
+                            outlier2 = outlier2 + 1
                         else:
                             filelist[grid_y][grid_x].write(outline + '\n')
                             tmp_set.add((grid_x, grid_y))
+                    else:
+                        global outlier1
+                        outlier1 = outlier1 + 1
     f.close()
 
 def imagesplit(img, imagesize, imgnamedir, gap, subsize):
@@ -127,7 +137,7 @@ def imagesplit(img, imagesize, imgnamedir, gap, subsize):
     imgname = os.path.basename(imgnamedir)
     suffix = os.path.splitext(imgname)[1]
     name = imgname[0:(len(imgname) - len(suffix))];
-    print('----------------------start')
+    #print('----------------------start')
     ###
     ## range are big enough
     for y in range(grid_m + 10):
@@ -138,35 +148,36 @@ def imagesplit(img, imagesize, imgnamedir, gap, subsize):
             index_y2 = int(index_y1 + subsize)
 
             subimg = np.zeros((subsize, subsize, 3))
-            print('x:', x)
-            print('grid_n:', grid_n)
+           # print('x:', x)
+           # print('grid_n:', grid_n)
             index_x2 = min(index_x2, imagesize[1])
             index_y2 = min(index_y2, imagesize[0])
-            print('index_x1', index_x1)
-            print('index_x2', index_x2)
-            print('index_y1', index_y1)
-            print('index_y2', index_y2)
+           # print('index_x1', index_x1)
+           # print('index_x2', index_x2)
+           # print('index_y1', index_y1)
+           # print('index_y2', index_y2)
             sub_width, sub_height = index_x2 - index_x1, index_y2 - index_y1
-            print('w:', sub_width)
-            print('h:', sub_height)
+            #print('w:', sub_width)
+            #print('h:', sub_height)
             #test = subimg
-            print('shape1:', np.shape(subimg[0:sub_height, 0:sub_width]))
-            print('shape img:', np.shape(img))
-            print('shape2:', np.shape(img[index_y1:index_y2,
-                    index_x1:index_x2]))
+            #print('shape1:', np.shape(subimg[0:sub_height, 0:sub_width]))
+            #print('shape img:', np.shape(img))
+            #print('shape2:', np.shape(img[index_y1:index_y2,
+#                    index_x1:index_x2]))
             subimg[0:sub_height, 0:sub_width] = img[index_y1:index_y2,
                                         index_x1:index_x2]
-            print('subimg shape', np.shape(subimg))
-            subname = name + '-' + str(y) + '_' + str(x) + suffix
-            print('suffix', suffix)
+            #print('subimg shape', np.shape(subimg))
+            #subname = name + '-' + str(y) + '_' + str(x) + suffix
+            subname = name + '-' + str(y) + '_' + str(x) + '.jpg'
+            #print('suffix', suffix)
             subdir = os.path.join(splitimagedir, subname)
-            print('imgsubdir', subdir)
+            #print('imgsubdir', subdir)
             cv2.imwrite(subdir, subimg)
             if (((x + 1) * (subsize - gap) + gap ) >= imagesize[1]):
                 break
         if (((y + 1) * (subsize - gap) + gap ) >= imagesize[0]):
             break
-    print('<<<<<<<<<<<<<<<<<<<<<<end')
+    #print('<<<<<<<<<<<<<<<<<<<<<<end')
 
 def splitdata(imgnamedir, gap, subsize):
     img = cv2.imread(imgnamedir)
@@ -188,6 +199,8 @@ def main():
         count = count + 1
         print(imgname)
         splitdata(imgname, args.gap, args.subsize)
+        print('outlier1:', outlier1)
+        print('outlier2:', outlier2)
 
 if __name__ == '__main__':
     main()
