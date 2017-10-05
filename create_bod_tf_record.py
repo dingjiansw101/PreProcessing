@@ -105,6 +105,11 @@ def dict_to_tf_example(data,
 
     difficult_obj.append(int(difficult))
 
+    if ((float(obj['bndbox']['xmin']) < 0) or
+        (float(obj['bndbox']['ymin']) < 0) or
+        (float(obj['bndbox']['xmax']) >= 1024) or
+        (float(obj['bndbox']['ymax']) >= 1024) ):
+        continue
     xmin.append(float(obj['bndbox']['xmin']) / width)
     ymin.append(float(obj['bndbox']['ymin']) / height)
     xmax.append(float(obj['bndbox']['xmax']) / width)

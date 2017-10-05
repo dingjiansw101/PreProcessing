@@ -41,7 +41,7 @@ def PointInRec(point, rec):
 
 def txtsplit(imagesize, name, gap, subsize):
     #print('imagesize', imagesize)
-
+    ### split the cut txt function return a 2-d list, or a dict, 使用字典， 那个子图有文件才创建, the index(2-dlist) or key(dict) represent the file to create,  and save txt process
     grid_m = int((imagesize[0] - gap)/(subsize - gap))
     grid_n = int((imagesize[1] - gap)/(subsize - gap))
     filelist = []
@@ -188,7 +188,7 @@ def splitdata(imgnamedir, gap, subsize):
     print('imgname', imgname)
     print('name', name)
     txtsplit(imagesize, name, gap, subsize)
-    imagesplit(img, imagesize, imgnamedir, gap, subsize)
+    #imagesplit(img, imagesize, imgnamedir, gap, subsize)
 
 def main():
 

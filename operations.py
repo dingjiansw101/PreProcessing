@@ -7,15 +7,15 @@ import cv2
 import numpy as np
 import codecs
 
-basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg'
+basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2'
 paths = []
 paths.append(os.path.join(basepath, 'information'))
 paths.append(os.path.join(basepath, 'images'))
 paths.append(os.path.join(basepath, 'labelTxt'))
 def filerm():
-    rmfiles = util.filesetcalc(paths[1], paths[2], 'd')
+    rmfiles = util.filesetcalc(paths[2], paths[1], 'd')
     for rmname in rmfiles:
-        rmdir = os.path.join(paths[1], rmname + '.tif')
+        rmdir = os.path.join(paths[2], rmname + '.txt')
         print('rmdir:', rmdir)
         os.remove(rmdir)
 def filemove():
@@ -28,6 +28,30 @@ def filemove():
         dstdir = os.path.join(movepath, name + '.tif')
         print('dstdir:', dstdir)
         shutil.move(srcdir, dstdir)
+def filemove2():
+    movepath = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2\nonobjectset'
+    srcfiles = util.filesetcalc(os.path.join(basepath, 'polylabelTxt'), paths[2], 'd')
+    for name in srcfiles:
+        srcdir = os.path.join(os.path.join(basepath, 'polylabelTxt'), name + '.txt')
+        dstdir = os.path.join(movepath, 'polylabelTxt', name + '.txt')
+        print('dstdir:', dstdir)
+        #shutil.move(srcdir, dstdir)
+def nonobjectfilemove():
+    movepath = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2\nonobjectset'
+    filelist = util.GetFileFromThisRootDir(paths[2])
+    for filename in filelist:
+        f = open(filename, 'r', encoding='utf-16')
+        lines = f.readlines()
+        f.close()
+        if (len(lines) == 0):
+            basename = os.path.basename(os.path.splitext(filename)[0])
+            txtsrcdir = filename
+            imgsrcdir = os.path.join(paths[1], basename + '.jpg')
+            txtdstdir = os.path.join(movepath, 'labelTxt', basename + '.txt')
+            imgdstdir = os.path.join(movepath, 'images', basename + '.jpg')
+            shutil.move(txtsrcdir, txtdstdir)
+            shutil.move(imgsrcdir, imgdstdir)
+
 def addDate(date):
     #date = '_7-30'
     for path in paths:
@@ -157,7 +181,7 @@ def findDiff():
 
 if __name__ == '__main__':
     #checkB()
-    pass
+    filemove2()
     #parseDarknetOut()
     #filerm()
     #rmDate()
