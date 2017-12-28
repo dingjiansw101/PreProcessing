@@ -1,0 +1,44 @@
+passenger plane: 0
+fighter aeroplane: 0
+radar warning aircraft: 0
+baseball diamond: 0
+bridge: 0
+ground track: 0
+car: 1
+truck: 1
+bus: 1
+ship: 0
+warship: 0
+tennis court: 0
+Basketball court: 0
+storage tank: 0
+soccer ball field: 0
+Turntable: 0
+harbor: 0
+electric pole: 0
+parking lot: 0
+swimming pool: 0
+lake: 0
+helicopter: 0
+airport: 0
+viaduct: 0
+18B: 0
+18C: 0
+18D: 0
+18E: 0
+18F: 0
+18G: 0
+18H: 0
+18I: 0
+18J: 0
+18K: 0
+18L: 0
+18M: 0
+18N: 0
+ship: 0
+plane: 0
+ship: 0
+storage: 0
+bridge: 0
+harbor: 0
+sum: 3

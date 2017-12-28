@@ -1,21 +1,13 @@
 #coding:utf-8
 import os
-import codecs,sys
-import string
-import re
-import math
-import numpy as np
 import argparse
 from  GetFileFromDir import GetFileFromThisRootDir
-import numpy as np
-import matplotlib.mlab as mlab
-import matplotlib.pyplot as plt
 from utils import datamap as dataDic
 from utils import classname
 from utils import clsdict
 def main():
     parser = argparse.ArgumentParser()
-    basepath  = r'E:\GoogleEarth\up-9-25-data\secondjpg\trainsplit-2'
+    basepath  = r'E:\Tool(2)\Tool'
     clearlabelpath = os.path.join(basepath, 'clearlabelTxt')
     parser.add_argument('--labelTxt', default=os.path.join(basepath, 'labelTxt'), type=str)
     parser.add_argument('--autocheck', default=os.path.join(basepath, 'autocheck'), type=str)

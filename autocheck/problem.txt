@@ -1,0 +1,48 @@
+car_0006 line: 1 wrong label: 
+car_0006 line: 2 wrong label: mclab
+car_0006 line: 3 wrong label: 
+car_0006 line: 4 wrong label: 558
+car_0006 line: 5 wrong label: 481
+car_0006 line: 6 wrong label: 
+car_0006 line: 7 wrong label: 
+car_0006 line: 8 wrong label: 
+car_0006 line: 9 wrong label: 78
+car_0006 line: 10 wrong label: mclab
+car_0006 line: 11 wrong label: 
+car_0006 line: 12 wrong label: mclab
+car_0006 line: 13 wrong label: 
+car_0006 line: 14 wrong label: 
+car_0006 line: 15 wrong label: 507
+car_0006 line: 16 wrong label: mclab
+car_0006 line: 17 wrong label: mclab
+car_0006 line: 18 wrong label: mclab
+car_0006 line: 19 wrong label: mclab
+car_0006 line: 20 wrong label: mclab
+car_0006 line: 21 wrong label: df
+car_0006 line: 22 wrong label: df
+car_0006 line: 23 wrong label: df
+car_0006 line: 24 wrong label: fsd
+car_0006 line: 25 wrong label: sfds
+car_0006 line: 26 wrong label: 
+car_0006 line: 27 wrong label: ddddddd
+car_0006 line: 28 wrong label: fd
+image_0 line: 1 wrong label: mclab
+image_0 line: 2 wrong label: 983
+image_0 line: 3 wrong label: 1717
+image_0 line: 4 wrong label: mclab
+image_0 line: 5 wrong label: mclab
+image_0 line: 6 missing label
+image_0 line: 7 wrong label: 1915
+image_0 line: 8 wrong label: 1330
+image_203 line: 1 wrong label: mclab
+image_203 line: 2 wrong label: mclab
+image_203 line: 3 missing label
+image_203 line: 4 wrong label: 1641
+image_203 line: 5 wrong label: mclab
+image_203 line: 6 wrong label: 340
+image_203 line: 7 wrong label: 830
+image_203 line: 8 wrong label: mclab
+image_203 line: 9 wrong label: mclab
+image_203 line: 10 wrong label: mclab
+image_203 line: 11 wrong label: mclab
+image_203 line: 12 wrong label: mclab

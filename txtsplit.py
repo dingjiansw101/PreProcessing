@@ -9,12 +9,12 @@ import sympy.geometry as geo
 import shapely.geometry as shgeo
 
 parser = argparse.ArgumentParser()
-basepath = r'E:\GoogleEarth\up-9-25-data\secondjpg'
-parser.add_argument('--dir', default=os.path.join(basepath, 'test'), type=str)
-parser.add_argument('--splitdir', default=os.path.join(basepath, 'testsplit'), type=str)
+basepath = r'E:\bod-dataset\trainset'
+parser.add_argument('--dir', default=os.path.join(basepath, 'train'), type=str)
+parser.add_argument('--splitdir', default=os.path.join(basepath, 'trainsplit-2'), type=str)
 parser.add_argument('--gap', default=80, type=int)
 parser.add_argument('--subsize', default=1024, type=int)
-parser.add_argument('--thresh', default=0.5, type=float)
+parser.add_argument('--thresh', default=1, type=float)
 args = parser.parse_args()
 labeldir = os.path.join(args.dir, 'labelTxt')
 imagedir = os.path.join(args.dir, 'images')
@@ -25,8 +25,8 @@ splitimagedir = os.path.join(args.splitdir, 'images')
 outlier1 = 0
 outlier2 = 0
 
-f_error_name = os.path.join(args.dir, 'autocheck', 'error.txt')
-f_error = open(f_error_name, 'w')
+#f_error_name = os.path.join(args.dir, 'autocheck', 'error.txt')
+#f_error = open(f_error_name, 'w')
 
 with open(os.path.join(args.splitdir, 'cutcfg.txt'), 'w') as f_cfg:
     f_cfg.write('gap:' + str(args.gap) + '\n')
@@ -119,7 +119,7 @@ def txtsplit(imagesize, name, gap, subsize):
                     ## TODO: find the bug, cause grid_x, grid_y out of index
                     if (half_iou >= args.thresh):
                         if (grid_y > grid_m) or (grid_x > grid_n):
-                            f_error.write(name + '\n')
+                            #f_error.write(name + '\n')
                             global outlier2
                             outlier2 = outlier2 + 1
                         else:
@@ -148,30 +148,13 @@ def imagesplit(img, imagesize, imgnamedir, gap, subsize):
             index_y2 = int(index_y1 + subsize)
 
             subimg = np.zeros((subsize, subsize, 3))
-           # print('x:', x)
-           # print('grid_n:', grid_n)
             index_x2 = min(index_x2, imagesize[1])
             index_y2 = min(index_y2, imagesize[0])
-           # print('index_x1', index_x1)
-           # print('index_x2', index_x2)
-           # print('index_y1', index_y1)
-           # print('index_y2', index_y2)
             sub_width, sub_height = index_x2 - index_x1, index_y2 - index_y1
-            #print('w:', sub_width)
-            #print('h:', sub_height)
-            #test = subimg
-            #print('shape1:', np.shape(subimg[0:sub_height, 0:sub_width]))
-            #print('shape img:', np.shape(img))
-            #print('shape2:', np.shape(img[index_y1:index_y2,
-#                    index_x1:index_x2]))
             subimg[0:sub_height, 0:sub_width] = img[index_y1:index_y2,
                                         index_x1:index_x2]
-            #print('subimg shape', np.shape(subimg))
-            #subname = name + '-' + str(y) + '_' + str(x) + suffix
             subname = name + '-' + str(y) + '_' + str(x) + '.jpg'
-            #print('suffix', suffix)
             subdir = os.path.join(splitimagedir, subname)
-            #print('imgsubdir', subdir)
             cv2.imwrite(subdir, subimg)
             if (((x + 1) * (subsize - gap) + gap ) >= imagesize[1]):
                 break

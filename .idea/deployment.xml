@@ -2,6 +2,13 @@
 <project version="4">
   <component name="PublishConfigData" createEmptyFolders="true">
     <serverData>
+      <paths name="115.156.96.1">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/code/PreProcessing" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="115.156.96.2">
         <serverdata>
           <mappings>

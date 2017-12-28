@@ -13,7 +13,7 @@ import GetFileFromDir as GetFile
 
 def main():
     path = r'G:\Data\中科院大学高清航拍目标数据集合\中科院大学高清航拍目标数据集合\PLANE'
-    list = GetFile.GetFileFromThisRootDir(path, 'txt');
+    list = GetFile.GetFileFromThisRootDir(path, 'txt')
     outpath = r'G:\Data\中科院大学高清航拍目标数据集合\中科院大学高清航拍目标数据集合\planetxt'
     for file in list:
         print('txt', file)
