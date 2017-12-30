@@ -114,6 +114,6 @@ def dota2labelme(srcpath, imagepath, dstpath):
         writelabelme(objects, imagename, dstname)
 
 if __name__ == '__main__':
-    dota2labelme(r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\labelTxt',
-                 r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\images',
-                 r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\annotations')
+    dota2labelme(r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\patches\filtered\labelTxt',
+                 r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\patches\filtered\images',
+                 r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\patches\filtered\annotations')

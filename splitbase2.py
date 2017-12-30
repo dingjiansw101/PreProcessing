@@ -83,7 +83,7 @@ class splitbase():
         self.labelpath = os.path.join(self.basepath, 'labelTxt')
         self.outimagepath = os.path.join(self.outpath, 'images')
         #self.outlabelpath = os.path.join(self.outpath, 'wordlabel')
-        self.outlabelpath = os.path.join(self.basepath, 'labelTxt')
+        self.outlabelpath = os.path.join(self.outpath, 'labelTxt')
         self.choosebestpoint = choosebestpoint
         with open(os.path.join(self.outpath, 'cutcfg.txt'), 'w') as f_cfg:
             f_cfg.write('gap:' + str(gap) + '\n')

@@ -68,7 +68,7 @@ class splitbase():
                  basepath,
                  outpath,
                  gap=100,
-                 subsize=2048,
+                 subsize=1024,
                  thresh=0.7,
                  choosebestpoint=False
                  ):
@@ -83,7 +83,7 @@ class splitbase():
         self.labelpath = os.path.join(self.basepath, 'labelTxt')
         self.outimagepath = os.path.join(self.outpath, 'images')
         #self.outlabelpath = os.path.join(self.outpath, 'wordlabel')
-        self.outlabelpath = os.path.join(self.basepath, 'labelTxt')
+        self.outlabelpath = os.path.join(self.outpath, 'labelTxt')
         self.choosebestpoint = choosebestpoint
         with open(os.path.join(self.outpath, 'cutcfg.txt'), 'w') as f_cfg:
             f_cfg.write('gap:' + str(gap) + '\n')
@@ -223,8 +223,8 @@ class splitbase():
                     for index, item in enumerate(polyInsub):
                         if (item <= 1):
                             polyInsub[index] = 1
-                        elif (item >= 1024):
-                            polyInsub[index] = 1024
+                        elif (item >= self.subsize):
+                            polyInsub[index] = self.subsize
                     outline = ' '.join(list(map(str, polyInsub)))
                     if (half_iou > self.thresh):
                         outline = outline + ' ' + obj['name'] + ' ' + str(obj['difficult'])
