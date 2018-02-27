@@ -295,6 +295,6 @@ class splitbase():
 if __name__ == '__main__':
     # split = splitbase(r'E:\bod-dataset',
     #                   r'E:\bod-dataset\cuttestpath')
-    split = splitbase(r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease',
-                       r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\patches')
+    split = splitbase(r'I:\dota2\GF2\subset8',
+                       r'I:\dota2\GF2\subset8_split')
     split.run()

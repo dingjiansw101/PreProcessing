@@ -67,8 +67,8 @@ class splitbase():
     def __init__(self,
                  basepath,
                  outpath,
-                 gap=512,
-                 subsize=1024,
+                 gap=100,
+                 subsize=2098,
                  thresh=0.7,
                  choosebestpoint=False
                  ):
@@ -294,6 +294,6 @@ class splitbase():
 if __name__ == '__main__':
     # split = splitbase(r'E:\bod-dataset',
     #                   r'E:\bod-dataset\cuttestpath')
-    split = splitbase(r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease',
-                       r'E:\GoogleEarth\up-9-25-data\secondjpg\most-up-date\nextrelease\patches')
+    split = splitbase(r'I:\dota2\5du\harbor\Filteredhabor',
+                       r'I:\dota2\5du\harbor\Filteredhabor\Filteredharbor2098')
     split.run()

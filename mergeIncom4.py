@@ -22,8 +22,8 @@ def poly2origpoly(poly, x, y):
 
 
 def main():
-    srcpath = r'E:\bod-dataset\results\bod_rfcn_303888'
-    dstpath = r'E:\bod-dataset\results\bod_rfcn_303888_nms'
+    srcpath = r'I:\dota2\5du\harbor\Filteredhabor1024\dota2_harbor_movejpg'
+    dstpath = r'I:\dota2\5du\harbor\Filteredhabor1024\dota2_harbor_nms'
     filelist = util.GetFileFromThisRootDir(srcpath)
     for fullname in filelist:
         name = util.mybasename(fullname)

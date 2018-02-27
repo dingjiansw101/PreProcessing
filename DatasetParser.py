@@ -124,7 +124,7 @@ def parse_darklabel(filename):
         object_struct['name'] = splitline[0]
         RecC = splitline[1:]
 def parsecomp4(srcpath, dstpath):
-    thresh = 0.3
+    thresh = 0.01
     #basepath = r'E:\bod-dataset\results'
     #comppath = os.path.join(basepath, r'bod-rfcn_303888-nms')
     #resultpath = os.path.join(basepath, 'bod_rfcn_303888-txt')
@@ -388,7 +388,7 @@ if __name__ == '__main__':
     #                       r'E:\downloaddataset\3K_VehicleDetection_dataset\Test_bod\wordlabel')
     # parsecomp4_poly(r'E:\bod-dataset\results\faster-rcnn-rot-59\nms0.1\comp4_test_nms_0.1',
     #                 r'E:\bod-dataset\results\faster-rcnn-rot-59\nms0.1\wordlabel')
-    # parsecomp4(r'E:\bod-dataset\results\bod_ssd1024_2000000',
-    #            r'E:\bod-dataset\results\bod_ssd1024_555044-nms\labelTxt')
-    flow2dota(r'I:\fMoW\fMoW-rgb_trainval_v1.0.0\fMoW-rgb\train\airport_hangar',
-              r'I:\fMoW\fMoW-rgb_trainval_v1.0.0\fMoW-rgb\dotaformat\labelTxt')
+    parsecomp4(r'E:\bod-dataset\results\dota608_ssd608_total_1243788_nms',
+               r'E:\bod-dataset\results\dota608_ssd608_total_1243788_nms_labelTxt')
+    # flow2dota(r'I:\fMoW\fMoW-rgb_trainval_v1.0.0\fMoW-rgb\train\airport_hangar',
+    #           r'I:\fMoW\fMoW-rgb_trainval_v1.0.0\fMoW-rgb\dotaformat\labelTxt')

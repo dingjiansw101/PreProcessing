@@ -7,7 +7,7 @@ from utils import classname
 from utils import clsdict
 def main():
     parser = argparse.ArgumentParser()
-    basepath  = r'E:\Tool(2)\Tool'
+    basepath  = r'I:\dota2\5du\rotterdam1selectedsub\rotterdam1selectedsub\removerotterdamfirstbatch'
     clearlabelpath = os.path.join(basepath, 'clearlabelTxt')
     parser.add_argument('--labelTxt', default=os.path.join(basepath, 'labelTxt'), type=str)
     parser.add_argument('--autocheck', default=os.path.join(basepath, 'autocheck'), type=str)

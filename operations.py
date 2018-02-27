@@ -557,8 +557,17 @@ if __name__ == '__main__':
     #GetTrainList(basepath)
     #GetTrainList(r'/home/dj/data/bod-v2')
 
-    filerm(r'E:\bod-dataset\jpgs',
-           r'E:\bod-dataset\images',
-           '.jpg')
-    # movejpgsuffix(r'E:\bod-dataset\results\bod_ssd1024_647571',
-    #               r'E:\bod-dataset\results\bod_ssd1024_647571-nms')
+    # filerm(r'E:\bod-dataset\jpgs',
+    #        r'E:\bod-dataset\images',
+    #        '.jpg')
+    # movejpgsuffix(r'I:\dota2\5du\harbor\Filteredhabor1024\dota2_harbor',
+    #               r'I:\dota2\5du\harbor\Filteredhabor1024\dota2_harbor_movejpg')
+
+    emptylist = util.filesetcalc(r'I:\dota2\5du\harbor\Filteredhabor\images',
+                                 r'I:\dota2\5du\harbor\Filteredhabor\labelTxt',
+                                 'd')
+    print('emptylist:', emptylist)
+    filemove(r'I:\dota2\5du\harbor\Filteredhabor\Filteredharbor2098\images',
+             r'I:\dota2\5du\harbor\Filteredhabor\Filteredharbor2098\emptyimages',
+             emptylist,
+             '.jpg')

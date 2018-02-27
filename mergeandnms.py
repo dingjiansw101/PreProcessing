@@ -2,7 +2,7 @@ import os
 import codecs
 import numpy as np
 import math
-from GetFileFromDir import GetFileFromThisRootDir
+# from GetFileFromDir import GetFileFromThisRootDir
 import argparse
 import cv2
 import shapely.geometry as shgeo
@@ -117,6 +117,7 @@ def mergebase(srcpath, dstpath, nms):
                 splitname = subname.split('__')
                 oriname = splitname[0]
                 pattern1 = re.compile(r'__\d+___\d+')
+                #print('subname:', subname)
                 x_y = re.findall(pattern1, subname)
                 x_y_2 = re.findall(r'\d+', x_y[0])
                 x, y = int(x_y_2[0]), int(x_y_2[1])
@@ -140,12 +141,20 @@ def mergebase(srcpath, dstpath, nms):
                         #print('outline:', outline)
                         f_out.write(outline + '\n')
 def mergebyrec():
-    srcpath = r'E:\bod-dataset\results\bod_faster_v2_1028498'
-    dstpath = r'E:\bod-dataset\results\bod_faster_v2_1028498-nms'
+    """
+    srcpath: result files before merge and nms
+    dstpath: result files after merge and nms
+    """
+    srcpath = r'E:\bod-dataset\results\bod-v3_rfcn_2000000'
+    dstpath = r'E:\bod-dataset\results\bod-v3_rfcn_2000000_nms'
     mergebase(srcpath,
               dstpath,
               py_cpu_nms)
 def mergebypoly():
+    """
+    srcpath: result files before merge and nms
+    dstpath: result files after merge and nms
+    """
     srcpath = r'/home/dj/faster-rcnn/output/rcnn/bod/bod/test/comp4_test_results'
     dstpath = r'/home/dj/faster-rcnn/output/rcnn/bod/bod/test/comp4_test_nms_0.1'
     mergebase(srcpath,

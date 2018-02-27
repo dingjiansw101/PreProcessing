@@ -52,7 +52,18 @@ datamap2 = {'0A': 'passenger plane', '0B': 'fighter aeroplane', '0C': 'radar',
 classname_part = ['0A', '0B', '0C', '1', '2', '3', '4A', '4B', '4C', '5A', '5B', '6', '7', '8', '9', '10'
     , '11', '12', '13', '14', '15', '16', '17', '18A']
 
-## prepare for release 1.0 version
+
+## prepare for release v1
+datamap_15_new = {'0A': 'plane', '0B':'plane', '0C': 'plane',  '1': 'baseball-diamond', '2': 'bridge', '3': 'ground-track-field', '4A': 'small-vehicle', '4B': 'large-vehicle',
+           '4C': 'large-vehicle', '5A': 'ship', '5B':'ship', '6': 'tennis-court', '7': 'basketball-court',
+           '8': 'storage-tank', '9': 'soccer-ball-field', '10': 'roundabout',
+           '11': 'harbor', '14': 'swimming-pool',
+           '16': 'helicopter'}
+
+wordname_15_new = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+               'basketball-court', 'storage-tank',  'soccer-ball-field', 'roundabout', 'harbor', 'swimming-pool', 'helicopter']
+
+## before release 1.0 version
 datamap_15 = {'0A': 'plane', '0B':'plane', '0C': 'plane',  '1': 'baseball-diamond', '2': 'bridge', '3': 'ground-track-field', '4A': 'small-vehicle', '4B': 'large-vehicle',
            '4C': 'large-vehicle', '5A': 'ship', '5B':'ship', '6': 'tennis-court', '7': 'basketball-court',
            '8': 'storage-tank', '9': 'soccer-ball-field', '10': 'turntable',
@@ -338,8 +349,8 @@ def parse_rec(filename):
     for obj in tree.findall('object'):
         obj_struct = {}
         obj_struct['name'] = obj.find('name').text
-        obj_struct['pose'] = obj.find('pose').text
-        obj_struct['truncated'] = int(obj.find('truncated').text)
+        #obj_struct['pose'] = obj.find('pose').text
+        #obj_struct['truncated'] = int(obj.find('truncated').text)
         obj_struct['difficult'] = int(obj.find('difficult').text)
         bbox = obj.find('bndbox')
         obj_struct['bbox'] = [int(bbox.find('xmin').text),
@@ -348,6 +359,37 @@ def parse_rec(filename):
                               int(bbox.find('ymax').text)]
         objects.append(obj_struct)
     return objects
+
+def parse_pascal(filename):
+    """ Parse a PASCAL VOC xml file """
+    tree = ET.parse(filename)
+    objects = []
+    for obj in tree.findall('object'):
+        obj_struct = {}
+        obj_struct['name'] = obj.find('name').text
+        #obj_struct['pose'] = obj.find('pose').text
+        #obj_struct['truncated'] = int(obj.find('truncated').text)
+        obj_struct['difficult'] = int(obj.find('difficult').text)
+        bbox = obj.find('bndbox')
+        obj_struct['bbox'] = [float(bbox.find('xmin').text),
+                              float(bbox.find('ymin').text),
+                              float(bbox.find('xmax').text),
+                              float(bbox.find('ymax').text)]
+        objects.append(obj_struct)
+    return objects
+
+def pascal2poly():
+    filenames = GetFileFromThisRootDir(r'E:\bod-dataset\cuttestpath2\pascalLabel')
+    for filename in filenames:
+        objects = parse_pascal(filename)
+        basename = mybasename(filename)
+        with codecs.open(os.path.join(r'E:\bod-dataset\cuttestpath2\voc2dota',basename + '.txt'), 'w', 'utf_16') as f_out:
+            for obj in objects:
+                rect = obj['bbox']
+                poly = dots2ToRec8(rect)
+                outline = ' '.join(map(str, poly)) + ' ' + obj['name']
+                f_out.write(outline + '\n')
+
 def parse_labelme_poly(filename):
     """ Parse a labelme xml file """
     tree = ET.parse(filename)
@@ -371,6 +413,68 @@ def distance(point1, point2):
     return np.sqrt(np.sum(np.square(point1 - point2)))
 
 small_count = 0
+
+def parse_dota_poly(filename):
+    objects = []
+    #print('filename:', filename)
+    f = []
+    if (sys.version_info >= (3, 5)):
+        fd = open(filename, 'r')
+        f = fd
+    elif (sys.version_info >= 2.7):
+        fd = codecs.open(filename, 'r')
+        f = fd
+    count = 0
+    while True:
+        line = f.readline()
+        count = count + 1
+        # if count < 2:
+        #     continue
+        if line:
+            splitlines = line.strip().split(' ')
+            object_struct = {}
+            ### clear the wrong name after check all the data
+            #if (len(splitlines) >= 9) and (splitlines[8] in classname):
+            if (len(splitlines) < 9):
+                continue
+            if (len(splitlines) >= 9):
+                    object_struct['name'] = splitlines[8]
+            if (len(splitlines) == 9):
+                object_struct['difficult'] = '0'
+            elif (len(splitlines) >= 10):
+                # if splitlines[9] == '1':
+                if (splitlines[9] == 'tr'):
+                    object_struct['difficult'] = '1'
+                else:
+                    object_struct['difficult'] = splitlines[9]
+                # else:
+                #     object_struct['difficult'] = 0
+            object_struct['poly'] = [(float(splitlines[0]), float(splitlines[1])),
+                                     (float(splitlines[2]), float(splitlines[3])),
+                                     (float(splitlines[4]), float(splitlines[5])),
+                                     (float(splitlines[6]), float(splitlines[7]))
+                                     ]
+            gtpoly = shgeo.Polygon(object_struct['poly'])
+            object_struct['area'] = gtpoly.area
+            poly = list(map(lambda x:np.array(x), object_struct['poly']))
+            object_struct['long-axis'] = max(distance(poly[0], poly[1]), distance(poly[1], poly[2]))
+            object_struct['short-axis'] = min(distance(poly[0], poly[1]), distance(poly[1], poly[2]))
+            if (object_struct['long-axis'] < 15):
+                object_struct['difficult'] = '1'
+                global small_count
+                small_count = small_count + 1
+            objects.append(object_struct)
+        else:
+            break
+    return objects
+
+def parse_dota_poly2(filename):
+    objects = parse_dota_poly(filename)
+    for obj in objects:
+        obj['poly'] = TuplePoly2Poly(obj['poly'])
+        obj['poly'] = list(map(int, obj['poly']))
+    return objects
+
 def parse_bod_poly(filename):
     objects = []
     #print('filename:', filename)
@@ -712,6 +816,7 @@ class FormatTransBase():
         self.wordlabelpath = os.path.join(basepath, 'wordlabel')
         self.darkpath = os.path.join(basepath, 'labels')
         self.namelist = [os.path.basename(os.path.splitext(x)[0] ) for x in GetFileFromThisRootDir(self.labelpath)]
+        self.wordnamelist = [os.path.basename(os.path.split(x)[0]) for x in GetFileFromThisRootDir(self.wordlabelpath)]
     def testGenerateClassLabel(self):
         classlabel_path = os.path.join(self.basepath, 'classlabel')
         for basename in self.namelist:
@@ -752,8 +857,12 @@ class FormatTransBase():
                         f_out.write(outline + '\n')
     def bod2pascal(self):
         pascalLabel_path = os.path.join(self.basepath, r'pascalLabel')
+        #pascalLabel_path = os.pardir.join(self.basepath, r'')
+        print('go in name list')
         for basename in self.namelist:
-            objects = parse_bod_poly(os.path.join(self.labelpath, basename + '.txt'))
+            print('basename:', basename)
+            #objects = parse_bod_poly(os.path.join(self.labelpath, basename + '.txt'))
+            objects = parse_bod_poly(os.path.join(self.wordlabelpath, basename + '.txt'))
             tree_root = ET.Element('annotation')
             folder = ET.SubElement(tree_root, 'secondjpg')
             filename = ET.SubElement(tree_root, basename)
@@ -763,13 +872,16 @@ class FormatTransBase():
             ## TODO: read imagesize from img or info
             imgname = os.path.join(self.basepath, 'images', basename + '.jpg')
             # img = cv2.imread(imgname)
-            width.text = str(1024)
-            height.text = str(1024)
+
+            ## need change with different width, height
+            width.text = str(608)
+            height.text = str(608)
             for obj in objects:
                 object = ET.SubElement(tree_root, 'object')
                 ET.dump(tree_root)
                 name = ET.SubElement(object, 'name')
-                name.text = datamap[obj['name']]
+                #name.text = datamap[obj['name']]
+                name.text = obj['name']
                 difficult = ET.SubElement(object, 'difficult')
                 print('difficult:', obj['difficult'])
                 difficult.text = str(obj['difficult'])
@@ -869,6 +981,10 @@ class FormatTransBase():
     def TransTo15ID_gt(self):
         dstpath = r'label5Txt'
         self.ParseTxtAndWrite(self.labelpath, dstpath, identity_15)
+
+    def TransToDota15Word_gt(self):
+        dstpath = r'wordlabel'
+        self.ParseTxtAndWrite(self.labelpath, dstpath, datamap_15_new)
     def TransTo15Word_gt(self):
         dstpath = r'wordlabel'
         self.ParseTxtAndWrite(self.labelpath, dstpath, datamap_15)
@@ -925,8 +1041,8 @@ class FormatTransBase():
                         continue
                     outline = str(id) + ' ' + ' '.join(list(map(str, bbox)))
                     f_out.write(outline + '\n')
-def testmergepatchlabel():
-    mergepatchlabel('pridictpath', 'mergepredictpath')
+# def testmergepatchlabel():
+#     mergepatchlabel('pridictpath', 'mergepredictpath')
 def npu2bod():
     basepath = r'E:\downloaddataset\NWPU VHR-10 dataset\NWPU'
     filelist = GetFileFromThisRootDir(os.path.join(basepath, 'ground truth'))
@@ -986,6 +1102,24 @@ def bodpolyToRec(srcpath, dstpath):
                 outline = outline + ' ' + str(difficult)
             f_out.write(outline + '\n')
 
+def comp4trans4to8(srcpath, dstpath):
+    filenames = GetFileFromThisRootDir(srcpath)
+    for filename in filenames:
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+            splitlines = [x.strip().split() for x in lines]
+            basename = mybasename(filename)
+            with open(os.path.join(dstpath, basename + '.txt'), 'w') as f_out:
+                for splitline in splitlines:
+                    if (len(splitline) < 6):
+                        continue
+                    imgname = splitline[0]
+                    confidence = splitline[1]
+                    rect = splitline[2:]
+                    poly = dots2ToRec8(rect)
+                    outline = imgname + ' ' + confidence + ' ' +  ' '.join(map(str, poly))
+                    f_out.write(outline + '\n')
+
 if __name__ == '__main__':
     #testgeneratefilelist(r'/home/dj/data/bod')
     #nwpubodcoord2darknet(r'E:\downloaddataset\NWPU\NWPU\labelTxt',
@@ -997,8 +1131,13 @@ if __name__ == '__main__':
     # bod2darknet(r'/home/dj/data/vehicleDetection/wordlabel',
     #             r'/home/dj/data/vehicleDetection/labels',
     #             names)
-    trans = FormatTransBase(r'E:\downloaddataset\3K_VehicleDetection_dataset\Test_bod')
-    trans.bodpolyToRec('labelTxt')
+    trans = FormatTransBase(r'I:\dota')
+    trans.TransToDota15Word_gt()
+
+    # pascal2poly()
+    # comp4trans4to8(r'E:\bod-dataset\results\bod_ssd1024_2000000-nms',
+    #                r'E:\bod-dataset\results\bod_ssd1024_2000000-nms_dots8')
+    #trans.bodpolyToRec('labelTxt')
     # bodpolyToRec(r'E:\bod-dataset\testset\wordlabel',
     #              r'E:\bod-dataset\testset\ReclabelTxt')
     #trans.TransTo15Word_gt()

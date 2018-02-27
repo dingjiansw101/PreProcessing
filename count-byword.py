@@ -18,7 +18,7 @@ import utils as util
 ## TODO: add crosspass
 def main():
     parser = argparse.ArgumentParser()
-    basepath  = r'E:\bod-dataset'
+    basepath  = r'I:\dota\testset'
     parser.add_argument('--labelTxt', default=os.path.join(basepath, 'wordlabel'), type=str)
     parser.add_argument('--autocheck', default=os.path.join(basepath, 'autocheck', 'by-word'), type=str)
     args = parser.parse_args()
