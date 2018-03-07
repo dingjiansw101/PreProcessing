@@ -67,8 +67,8 @@ class splitbase():
     def __init__(self,
                  basepath,
                  outpath,
-                 gap=100,
-                 subsize=2098,
+                 gap=512,
+                 subsize=1024,
                  thresh=0.7,
                  choosebestpoint=False
                  ):
@@ -79,11 +79,13 @@ class splitbase():
         self.slide = self.subsize - self.gap
         self.thresh = thresh
         self.imagepath = os.path.join(self.basepath, 'images')
-        #self.labelpath = os.path.join(self.basepath, 'wordlabel')
-        self.labelpath = os.path.join(self.basepath, 'labelTxt')
+        self.labelpath = os.path.join(self.basepath, 'wordlabel')
+        self.orilabelpath = os.path.join(self.basepath, 'orilabelTxt')
+        #self.labelpath = os.path.join(self.basepath, 'labelTxt')
         self.outimagepath = os.path.join(self.outpath, 'images')
-        #self.outlabelpath = os.path.join(self.outpath, 'wordlabel')
-        self.outlabelpath = os.path.join(self.outpath, 'labelTxt')
+        self.outlabelpath = os.path.join(self.outpath, 'wordlabel')
+        self.outorilabelpath = os.path.join(self.outpath, 'oriwordlabel')
+        #self.outlabelpath = os.path.join(self.outpath, 'labelTxt')
         self.choosebestpoint = choosebestpoint
         with open(os.path.join(self.outpath, 'cutcfg.txt'), 'w') as f_cfg:
             f_cfg.write('gap:' + str(gap) + '\n')
@@ -223,8 +225,8 @@ class splitbase():
                     for index, item in enumerate(polyInsub):
                         if (item <= 1):
                             polyInsub[index] = 1
-                        elif (item >= 1024):
-                            polyInsub[index] = 1024
+                        elif (item >= self.subsize):
+                            polyInsub[index] = self.subsize
                     outline = ' '.join(list(map(str, polyInsub)))
                     if (half_iou > self.thresh):
                         outline = outline + ' ' + obj['name'] + ' ' + str(obj['difficult'])
@@ -233,7 +235,7 @@ class splitbase():
                     f_out.write(outline + '\n')
                 #else:
                  #   mask_poly.append(inter_poly)
-        self.saveimagepatches(resizeimg, subimgname, left, up)
+        #self.saveimagepatches(resizeimg, subimgname, left, up)
 
     def SplitSingle(self, name, rate, extent):
         img = cv2.imread(os.path.join(self.imagepath, name + extent))
@@ -277,13 +279,13 @@ class splitbase():
 
     def splitdata_half(self, imgenames):
          for name in imgenames:
-             self.SplitSingle(name, 0.5, '.png')
+             self.SplitSingle(name, 0.5, '.jpg')
     def splitdata(self, imgenames):
          for name in imgenames:
              self.SplitSingle(name, 1, '.jpg')
     def splitdata_2(self, imagenames):
         for name in imagenames:
-            self.SplitSingle(name, 2, '.png')
+            self.SplitSingle(name, 2, '.jpg')
 
     def run(self):
         imagelist = GetFileFromThisRootDir(self.imagepath)
@@ -294,6 +296,6 @@ class splitbase():
 if __name__ == '__main__':
     # split = splitbase(r'E:\bod-dataset',
     #                   r'E:\bod-dataset\cuttestpath')
-    split = splitbase(r'I:\dota2\5du\harbor\Filteredhabor',
-                       r'I:\dota2\5du\harbor\Filteredhabor\Filteredharbor2098')
+    split = splitbase(r'/data/Data_dj/data/bod-ori/oriwordlabel',
+                       r'/data/Data_dj/data/bod-v3/oriwordlabel')
     split.run()
